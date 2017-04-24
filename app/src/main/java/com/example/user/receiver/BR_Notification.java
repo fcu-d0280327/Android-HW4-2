@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 
 public class BR_Notification extends BroadcastReceiver{
 
@@ -19,9 +20,12 @@ public class BR_Notification extends BroadcastReceiver{
         String msg = intent.getStringExtra("KEY_MSG");
 
         Intent newintent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putString("KEY_NAME", msg);
+        newintent.putExtras(bundle);
         newintent.setClass(context, ActivityNotification.class);
         PendingIntent pendingIntent = PendingIntent.
-                getActivity(context, 0, newintent, 0);
+                getActivity(context, 0, newintent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Notification notify = null;
         notify = newNotification(context, pendingIntent, "(New) Broadcast is received.", msg);
@@ -29,7 +33,7 @@ public class BR_Notification extends BroadcastReceiver{
         NotificationManager notificationManager =
                 (NotificationManager)context.
                         getSystemService(Context.NOTIFICATION_SERVICE);
-
+        notificationManager.cancel(id - 1);
         notificationManager.notify(id++, notify);
     }
 
